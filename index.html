@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subli House - Canecas Personalizadas que Contam Histórias</title>
+    <meta name="description" content="Crie canecas personalizadas com suas fotos, frases e designs. Ferramenta de personalização online fácil de usar, impressão de alta qualidade e entrega para todo o Brasil.">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+
+    <style>
+        /*
+        ================================================================
+        1. RESET E VARIÁVEIS GLOBAIS (O DNA DO DESIGN)
+        ================================================================
+        */
+        :root {
+            --color-primary: #FF7A00;      /* Laranja Vibrante */
+            --color-primary-dark: #E66E00; /* Laranja para hover */
+            --color-dark: #121212;         /* Preto Intenso */
+            --color-dark-2: #1a1a1a;       /* Preto um pouco mais suave */
+            --color-light: #FFFFFF;        /* Branco Puro */
+            --color-background: #F8F9FA;   /* Fundo Principal */
+            --color-background-alt: #FFF5EB; /* Laranja bem claro para quebrar o branco */
+            --color-grey-light: #E9ECEF;   /* Bordas e divisórias */
+            --color-grey-dark: #495057;    /* Textos secundários */
+            --color-success: #28a745;
+            --color-danger: #dc3545;
+            --color-star: #FFC107; /* Amarelo para estrelas */
+
+            --font-headings: 'Poppins', sans-serif;
+            --font-body: 'Inter', sans-serif;
+
+            --container-width: 1200px;
+            --border-radius: 12px;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+            --transition: all 0.3s ease-in-out;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-light);
+            color: var(--color-dark);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        section {
+            padding: 6rem 0;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: var(--font-headings);
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--color-dark);
+        }
+
+        h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); }
+        h2 { font-size: clamp(2rem, 4vw, 3rem); text-align: center; margin-bottom: 3rem; }
+        h3 { font-size: 1.5rem; }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--color-grey-dark);
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--color-primary);
+            transition: var(--transition);
+        }
+        a:hover {
+            color: var(--color-primary-dark);
+        }
+
+        /*
+        ================================================================
+        2. COMPONENTES REUTILIZÁVEIS
+        ================================================================
+        */
+        .cta-button {
+            display: inline-block;
+            font-family: var(--font-headings);
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--color-light);
+            background: var(--color-primary);
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-align: center;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            box-shadow: 0 5px 15px rgba(255, 122, 0, 0.3);
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            background: var(--color-primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 122, 0, 0.4);
+            color: var(--color-light);
+        }
+
+        .cta-button-outline {
+            background: transparent;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+            box-shadow: none;
+            cursor: pointer;
+        }
+
+        .cta-button-outline:hover {
+            background: var(--color-primary);
+            color: var(--color-light);
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        /*
+        ================================================================
+        3. CABEÇALHO (HEADER)
+        ================================================================
+        */
+        .main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1.5rem 0;
+            transition: var(--transition);
+        }
+
+        .main-header.scrolled {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1rem 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .main-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-headings);
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--color-dark);
+        }
+
+        .logo:hover {
+            color: var(--color-primary);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+        
+        .nav-links a {
+            font-weight: 600;
+            color: var(--color-dark-2);
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--color-primary);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-dark);
+        }
+        
+        #menu-toggle { display: none; }
+        .menu-icon { display: none; }
+
+        /*
+        ================================================================
+        4. SEÇÃO HERO E SEÇÃO DE DESTAQUE COLORIDA
+        ================================================================
+        */
+        #inicio {
+            background-color: var(--color-background);
+            padding-top: 10rem;
+            padding-bottom: 6rem;
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+        }
+
+        #inicio .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4rem;
+        }
+        
+        .hero-text {
+            flex: 1;
+        }
+        
+        .hero-text .subtitle {
+            font-family: var(--font-headings);
+            color: var(--color-primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .hero-text h1 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero-text p {
+            font-size: 1.2rem;
+            max-width: 500px;
+            margin-bottom: 2.5rem;
+        }
+        
+        .hero-image {
+            flex: 1;
+            position: relative;
+        }
+        
+        .hero-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+            transform: rotate(3deg);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .hero-image:hover img {
+            transform: rotate(0deg) scale(1.05);
+        }
+        
+        #features-bar {
+            background-color: var(--color-background-alt);
+            padding: 3rem 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .feature-item .icon {
+            font-size: 2.5rem;
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+        
+        /*
+        ================================================================
+        5. SEÇÃO DE PRODUTOS/CATÁLOGO
+        ================================================================
+        */
+        #catalogo {
+             background-color: var(--color-light);
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+        
+        .product-card {
+            background: var(--color-light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .product-image {
+            background-color: var(--color-background);
+            padding: 2rem;
+            height: 250px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .product-image img {
+            max-width: 100%;
+            max-height: 100%;
+            transition: var(--transition);
+        }
+        
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .product-info h3 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        /*
+        ================================================================
+        6. SEÇÃO GALERIA (PORTFÓLIO)
+        ================================================================
+        */
+        #portfolio {
+            background-color: var(--color-light);
+        }
+
+        .slider-wrapper {
+            position: relative;
+        }
+
+        .slider {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 1.5rem;
+            padding-bottom: 1.5rem; /* Espaço para a barra de rolagem */
+        }
+        
+        /* Estilização da barra de rolagem */
+        .slider::-webkit-scrollbar {
+            height: 12px;
+        }
+        .slider::-webkit-scrollbar-track {
+            background: var(--color-grey-light);
+            border-radius: 10px;
+        }
+        .slider::-webkit-scrollbar-thumb {
+            background-color: var(--color-primary);
+            border-radius: 10px;
+            border: 3px solid var(--color-grey-light);
+        }
+
+        .slider-item {
+            scroll-snap-align: start;
+            flex: 0 0 300px; /* Largura de cada item */
+        }
+
+        .slider-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        /*
+        ================================================================
+        7. SEÇÃO AVALIAÇÕES
+        ================================================================
+        */
+        #avaliacoes {
+            background-color: var(--color-background);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background: var(--color-light);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .testimonial-card .stars {
+            color: var(--color-star);
+            margin-bottom: 1rem;
+        }
+
+        .testimonial-card blockquote {
+            border-left: 3px solid var(--color-primary);
+            padding-left: 1rem;
+            margin-bottom: 1rem;
+            font-style: italic;
+            flex-grow: 1;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .testimonial-author img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .testimonial-author strong {
+            display: block;
+        }
+
+        /*
+        ================================================================
+        8. SEÇÃO PERSONALIZADOR (O CORAÇÃO DO SITE)
+        ================================================================
+        */
+        #personalizador {
+            background-color: var(--color-dark-2); /* Fundo mais escuro */
+        }
+        
+        #personalizador h2 {
+            color: var(--color-light); /* Texto do título branco para contraste */
+        }
+
+        .customizer-wrapper {
+            display: flex;
+            gap: 3rem;
+            background: var(--color-light);
+            padding: 3rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .customizer-controls {
+            flex: 1;
+            max-width: 400px;
+        }
+        
+        .control-group {
+            margin-bottom: 2rem;
+        }
+        
+        .control-group h3 {
+             margin-bottom: 1.5rem;
+        }
+        
+        .control-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+        
+        .control-group input[type="text"],
+        .control-group input[type="color"],
+        .control-group input[type="file"],
+        .control-group select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--color-grey-light);
+            font-family: var(--font-body);
+            font-size: 1rem;
+        }
+
+        .control-group input[type="color"] {
+            height: 50px;
+            padding: 0.3rem;
+        }
+        
+        .customizer-preview {
+            flex: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url('https://i.imgur.com/2x8e3sR.png') repeat; /* Fundo cinza claro quadriculado */
+            border-radius: var(--border-radius);
+            min-height: 500px;
+            position: relative;
+        }
+        
+        #mug-preview-container {
+            position: relative;
+            width: 450px;
+            height: 450px;
+        }
+
+        #mug-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            transition: var(--transition);
+            background-image: url('https://i.imgur.com/WkG4jZQ.png'); 
+        }
+
+        /* Proporção: 20.12cm / 8.2cm ≈ 2.45 */
+        #canvas-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 245px; /* Proporcional a 20.12cm */
+            height: 100px; /* Proporcional a 8.2cm */
+            transform: translate(-50%, -60%); /* Ajuste fino */
+            border: 2px dashed rgba(0,0,0,0.2);
+        }
+
+        .canvas-container { /* Fabric.js cria este wrapper */
+             border-radius: 8px;
+        }
+        
+        .final-actions {
+            margin-top: 2rem;
+            border-top: 1px solid var(--color-grey-light);
+            padding-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        /*
+        ================================================================
+        9. MODAL DE PREVIEW 3D
+        ================================================================
+        */
+        .modal-overlay {
+            display: none; /* Escondido por padrão */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--color-light);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            position: relative;
+            text-align: center;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            color: var(--color-grey-dark);
+            cursor: pointer;
+        }
+
+        #mug-3d-preview {
+            width: 350px;
+            height: 350px;
+            background-image: url('https://i.imgur.com/WkG4jZQ.png'); /* Mockup da caneca de fundo */
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            margin: 1rem auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px; /* Ativa a perspectiva 3D */
+        }
+        
+        #art-preview-overlay {
+            width: 140px; /* Largura da arte no mockup */
+            height: 120px; /* Altura da arte no mockup */
+            object-fit: contain;
+            transform: rotateY(-15deg) translateZ(50px) translateX(-10px) translateY(-10px) skewY(2deg); /* Mágica do CSS para simular curvatura */
+            transition: var(--transition);
+        }
+        
+        /*
+        ================================================================
+        10. RODAPÉ (FOOTER)
+        ================================================================
+        */
+        .main-footer {
+            background: var(--color-dark);
+            color: var(--color-background);
+            padding: 4rem 0 2rem 0;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid var(--color-grey-dark);
+        }
+        
+        .footer-column h4 {
+            color: var(--color-light);
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .footer-column p, .footer-column a {
+            color: var(--color-grey-light);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-column a:hover {
+            color: var(--color-primary);
+        }
+        
+        .social-links a {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            font-size: 0.9rem;
+            color: var(--color-grey-dark);
+        }
+        
+        /*
+        ================================================================
+        11. RESPONSIVIDADE (MOBILE-FRIENDLY)
+        ================================================================
+        */
+        @media (max-width: 992px) {
+            html { font-size: 15px; }
+            .nav-links { display: none; }
+            .menu-icon { 
+                display: block; 
+                font-size: 1.8rem; 
+                cursor: pointer;
+                color: var(--color-dark);
+            }
+            .nav-links.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                right: 0;
+                background: var(--color-light);
+                width: 100%;
+                padding: 2rem;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+                border-top: 1px solid var(--color-grey-light);
+            }
+            .nav-links.active li {
+                text-align: center;
+            }
+            #inicio .container { flex-direction: column; text-align: center; }
+            .hero-text p { margin-left: auto; margin-right: auto; }
+            
+            .customizer-wrapper { flex-direction: column; }
+            .customizer-controls { max-width: 100%; }
+        }
+
+        @media (max-width: 576px) {
+            html { font-size: 14px; }
+            section { padding: 4rem 0; }
+            h2 { margin-bottom: 2rem; }
+            .container { padding: 0 1rem; }
+            .cta-button { padding: 0.8rem 1.8rem; }
+            .footer-grid { text-align: center; }
+            .social-links { text-align: center; margin-top: 1rem; }
+        }
+
+  .whatsapp-float {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+    cursor: pointer;
+  }
+
+  .whatsapp-float img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+  }
+
+  .whatsapp-float:hover img {
+    transform: scale(1.1);
+  }
+
+    </style>
+</head>
+<body>
+
+    <header class="main-header" id="mainHeader">
+        <div class="container">
+            <a href="#" class="logo">Subli House</a>
+            <nav>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#inicio">Início</a></li>
+                    <li><a href="#catalogo">Canecas</a></li>
+                    <li><a href="#portfolio">Nossas Criações</a></li>
+                    <li><a href="#personalizador">Crie a Sua</a></li>
+                    <li><a href="#footer">Contato</a></li>
+                </ul>
+            </nav>
+            <i class="fas fa-bars menu-icon" id="menuToggle"></i>
+        </div>
+    </header>
+
+    <main>
+
+        <section id="inicio">
+            <div class="container">
+                <div class="hero-text">
+                    <p class="subtitle">Bem-vindo à Subli House</p>
+                    <h1>Sua Ideia na Caneca Perfeita.</h1>
+                    <p>Transforme fotos, frases e designs em presentes inesquecíveis. Use nossa ferramenta de criação e receba em casa uma caneca com qualidade de impressão impecável.</p>
+                    <a href="#personalizador" class="cta-button">Comece a Criar Agora <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <div class="hero-image">
+                    <img src="https://cdn.awsli.com.br/2500x2500/2076/2076579/produto/315209625/4738c2a0f9dd8c58c8950b11b2f9d687-engax9ltkd.jpg" alt="Caneca personalizada em um ambiente moderno">
+                </div>
+            </div>
+        </section>
+
+        <section id="features-bar">
+            <div class="container">
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="icon"><i class="fas fa-palette"></i></div>
+                        <h3>Qualidade de Impressão</h3>
+                        <p>Cores vivas e fiéis à sua arte, com acabamento profissional.</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="icon"><i class="fas fa-tools"></i></div>
+                        <h3>Criação Intuitiva</h3>
+                        <p>Nosso editor online é simples e poderoso. Crie em minutos.</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="icon"><i class="fas fa-shipping-fast"></i></div>
+                        <h3>Entrega em todo o Brasil</h3>
+                        <p>Receba sua caneca exclusiva no conforto da sua casa.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="catalogo">
+            <div class="container">
+                <h2>Escolha seu Ponto de Partida</h2>
+                <div class="product-grid">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://down-br.img.susercontent.com/file/br-11134207-7r98p-lml6w394j0h7b9" alt="Caneca de Cerâmica Branca">
+                        </div>
+                        <div class="product-info">
+                            <div>
+                                <h3>Caneca de Cerâmica Branca</h3>
+                                <p class="product-price">R$ 30,00</p>
+                            </div>
+                            <a href="#personalizador" class="cta-button-outline">Personalizar este modelo</a>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image">
+                             <img src="https://cdn.sistemawbuy.com.br/arquivos/3d17564acc488fc823e134412b403172/produtos/660c336b0f76d/caneca-de-vidro-personalizada-660c336be8631.webp" alt="Caneca Jateada">
+                        </div>
+                        <div class="product-info">
+                            <div>
+                                <h3>Caneca Jateada (0º)</h3>
+                                <p>(0 Graus) Pode levar ao congelador, mantém temperatura</p>
+                                <p class="product-price">R$ 30,00</p>
+                            </div>
+                            <a href="#personalizador" class="cta-button-outline">Personalizar este modelo</a>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image">
+                             <img src="https://img.elo7.com.br/product/zoom/4F35A02/caneca-polimero-personalizada-canecas-personalizadas.jpg" alt="Caneca com Interior e Alça Colorida">
+                        </div>
+                        <div class="product-info">
+                            <div>
+                                <h3>Caneca de polímero</h3>
+                                <p>Um plástico muito resistente</p>
+                                <p class="product-price">R$ 20,90</p>
+                            </div>
+                            <a href="#personalizador" class="cta-button-outline">Personalizar este modelo</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="portfolio">
+            <div class="container">
+                <h2>Algumas de nNossas Criações</h2>
+                <div class="slider-wrapper">
+                    <div class="slider">
+                        <div class="slider-item"><img src="https://i.snapcdn.app/photo?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJodHRwczovL2luc3RhZ3JhbS5maGFuNS0xMS5mbmEuZmJjZG4ubmV0L3YvdDUxLjI5MzUwLTE1LzQxMjczODk3OF8zNTA4NzM5NzA5NzgyOTFfODM5ODY0OTg5MTY3MTYzMDEzNV9uLmpwZz9zdHA9ZHN0LWpwZ19lMzVfcDEwODB4MTA4MF90dDYmX25jX2h0PWluc3RhZ3JhbS5maGFuNS0xMS5mbmEuZmJjZG4ubmV0Jl9uY19jYXQ9MTAzJl9uY19vYz1RNmNaMlFFNjJ6ZkphYnlmUER2NjdjVm51MWpWVFdCZzZ2RVBUaTdpdF9NSDQ3TGt1Z0ZzRmM2cFptMGdZZHJ6TFJrNGk2cyZfbmNfb2hjPXU3TUYyYmdGRUhZUTdrTnZ3R0VoU0J1Jl9uY19naWQ9ZUN5ektDdXptcThWV2w3LVJiZjRKQSZlZG09QU9RMWMwd0JBQUFBJmNjYj03LTUmb2g9MDBfQWZTVUNPTG5BNndYd2lfWHY4TXByNHo5VUFMQ0FDbFp6TjdpN2RQaVo3aTFPQSZvZT02ODdCMTg0MSZfbmNfc2lkPThiMzU0NiIsImZpbGVuYW1lIjoiVGh1bWJuYWlsXzQxMjczODk3OF8zNTA4NzM5NzA5NzgyOTFfODM5ODY0OTg5MTY3MTYzMDEzNV9uLmpwZyIsIm5iZiI6MTc1MjUxNTY0NCwiZXhwIjoxNzUyNTE5MjQ0LCJpYXQiOjE3NTI1MTU2NDR9.Syu7PD_MBHTRiHRB1_bsGrtvViJTyGEC-SQbHCP36bw" alt="Exemplo de caneca personalizada 1"></div>
+                        <div class="slider-item"><img src="https://i.snapcdn.app/photo?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJodHRwczovL2luc3RhZ3JhbS5maGFuNS02LmZuYS5mYmNkbi5uZXQvdi90NTEuMjkzNTAtMTUvNDEyNzE4NDc4XzgzNDg3Mjk3NDk3Mjk4N184ODM2MTgyODYzNjg5Mjk5NTYyX24uanBnP3N0cD1kc3QtanBnX2UzNV9wMTA4MHgxMDgwX3R0NiZfbmNfaHQ9aW5zdGFncmFtLmZoYW41LTYuZm5hLmZiY2RuLm5ldCZfbmNfY2F0PTEwNyZfbmNfb2M9UTZjWjJRRTYyemZKYWJ5ZlBEdjY3Y1ZudTFqVlRXQmc2dkVQVGk3aXRfTUg0N0xrdWdGc0ZjNnBabTBnWWRyekxSazRpNnMmX25jX29oYz1ETGFPRHNpZ3FpOFE3a052d0hlLTRlUSZfbmNfZ2lkPWVDeXpLQ3V6bXE4VldsNy1SYmY0SkEmZWRtPUFPUTFjMHdCQUFBQSZjY2I9Ny01Jm9oPTAwX0FmUXVuTzNIc296ZmhGSi01R2xoQ205VEQ2OHRIeHFXZGo5Tkc1ZmtrZGNUUHcmb2U9Njg3QjFERUEmX25jX3NpZD04YjM1NDYiLCJmaWxlbmFtZSI6IlRodW1ibmFpbF80MTI3MTg0NzhfODM0ODcyOTc0OTcyOTg3Xzg4MzYxODI4NjM2ODkyOTk1NjJfbi5qcGciLCJuYmYiOjE3NTI1MTU2NDQsImV4cCI6MTc1MjUxOTI0NCwiaWF0IjoxNzUyNTE1NjQ0fQ.mKDDYa4osmwBmZxrRNu9HdJan4NDaOUAOk3ptipswB8" alt="Exemplo de caneca personalizada 2"></div>
+                        <div class="slider-item"><img src="https://i.snapcdn.app/photo?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJodHRwczovL2luc3RhZ3JhbS5maGFuNS02LmZuYS5mYmNkbi5uZXQvdi90NTEuMjkzNTAtMTUvNDM0NDU3NDAzXzI5MzI4MTMzNzEzMjgzOV8yMTE1NzkxNjE2MjcwMDY4NDM0X24uanBnP3N0cD1kc3QtanBnX2UzNV9wMTA4MHgxMDgwX3R0NiZfbmNfaHQ9aW5zdGFncmFtLmZoYW41LTYuZm5hLmZiY2RuLm5ldCZfbmNfY2F0PTEwNyZfbmNfb2M9UTZjWjJRRTYyemZKYWJ5ZlBEdjY3Y1ZudTFqVlRXQmc2dkVQVGk3aXRfTUg0N0xrdWdGc0ZjNnBabTBnWWRyekxSazRpNnMmX25jX29oYz1hcC1COUY5XzlQZ1E3a052d0dkTnp5MCZfbmNfZ2lkPWVDeXpLQ3V6bXE4VldsNy1SYmY0SkEmZWRtPUFPUTFjMHdCQUFBQSZjY2I9Ny01Jm9oPTAwX0FmUXBadktfaHNmWlBjS3ZiWVV6NzUwdXVaMUJ6VWU1UDlmU0kzTE9BNkRKRmcmb2U9Njg3QjBCMkMmX25jX3NpZD04YjM1NDYiLCJmaWxlbmFtZSI6IlRodW1ibmFpbF80MzQ0NTc0MDNfMjkzMjgxMzM3MTMyODM5XzIxMTU3OTE2MTYyNzAwNjg0MzRfbi5qcGciLCJuYmYiOjE3NTI1MTU2NDQsImV4cCI6MTc1MjUxOTI0NCwiaWF0IjoxNzUyNTE1NjQ0fQ.Og-trRZicPHN3Bf7NPv7s_AU0eb8uxc2NQuVer50zQg" alt="Exemplo de caneca personalizada 3"></div>
+                        <div class="slider-item"><img src="https://i.snapcdn.app/photo?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJodHRwczovL2luc3RhZ3JhbS5maGFuNS04LmZuYS5mYmNkbi5uZXQvdi90NTEuMjkzNTAtMTUvNDEyMDY4NDgyXzE3NzE4NzAwNzk5Mjg0MjZfNDA3NzY1NjY3OTIyMDk1MDE0M19uLmpwZz9zdHA9ZHN0LWpwZ19lMzVfcDEwODB4MTA4MF90dDYmX25jX2h0PWluc3RhZ3JhbS5maGFuNS04LmZuYS5mYmNkbi5uZXQmX25jX2NhdD0xMDYmX25jX29jPVE2Y1oyUUU2MnpmSmFieWZQRHY2N2NWbnUxalZUV0JnNnZFUFRpN2l0X01INDdMa3VnRnNGYzZwWm0wZ1lkcnpMUms0aTZzJl9uY19vaGM9NUNMelVoVDh5d29RN2tOdndFUDdFeC0mX25jX2dpZD1lQ3l6S0N1em1xOFZXbDctUmJmNEpBJmVkbT1BT1ExYzB3QkFBQUEmY2NiPTctNSZvaD0wMF9BZlQ5a0N5emFfeTJKWDBEV1dUVE1OZjZpYXJBVktkb1VPVElmVHBJOHF4Q2NBJm9lPTY4N0IyQjM2Jl9uY19zaWQ9OGIzNTQ2IiwiZmlsZW5hbWUiOiJUaHVtYm5haWxfNDEyMDY4NDgyXzE3NzE4NzAwNzk5Mjg0MjZfNDA3NzY1NjY3OTIyMDk1MDE0M19uLmpwZyIsIm5iZiI6MTc1MjUxNTY0NCwiZXhwIjoxNzUyNTE5MjQ0LCJpYXQiOjE3NTI1MTU2NDR9.Q4MlYi9a7ptcg2POj_JyTLtKWHb_Xt_O69Vdb7YC58Q" alt="Exemplo de caneca personalizada 4"></div>
+                        <div class="slider-item"><img src="https://i.snapcdn.app/photo?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJodHRwczovL2luc3RhZ3JhbS5maGFuNS04LmZuYS5mYmNkbi5uZXQvdi90NTEuMjkzNTAtMTUvNDQ4MDQzMjkyXzE2ODc2ODY3NzE3NjY5NTBfMzI2NTg3NjUzODgzMjUzMTgyOV9uLmpwZz9zdHA9ZHN0LWpwZ19lMzVfcDEwODB4MTA4MF90dDYmX25jX2h0PWluc3RhZ3JhbS5maGFuNS04LmZuYS5mYmNkbi5uZXQmX25jX2NhdD0xMDYmX25jX29jPVE2Y1oyUUU2MnpmSmFieWZQRHY2N2NWbnUxalZUV0JnNnZFUFRpN2l0X01INDdMa3VnRnNGYzZwWm0wZ1lkcnpMUms0aTZzJl9uY19vaGM9VGhjQ1A4Z3BpM3NRN2tOdndIXy1mXzYmX25jX2dpZD1lQ3l6S0N1em1xOFZXbDctUmJmNEpBJmVkbT1BT1ExYzB3QkFBQUEmY2NiPTctNSZvaD0wMF9BZlFTRjM3dE11Z2ZlZGUwVUJLWFhMd2NpdEdwNG4teFhzZzNwamQyT29FZFBnJm9lPTY4N0IyNjZFJl9uY19zaWQ9OGIzNTQ2IiwiZmlsZW5hbWUiOiJUaHVtYm5haWxfNDQ4MDQzMjkyXzE2ODc2ODY3NzE3NjY5NTBfMzI2NTg3NjUzODgzMjUzMTgyOV9uLmpwZyIsIm5iZiI6MTc1MjUxNTY0NCwiZXhwIjoxNzUyNTE5MjQ0LCJpYXQiOjE3NTI1MTU2NDR9.Wbh5K5zG6YlRsPnY6fSzyf8Te1IX3LnU08P_8A9fB4M" alt="Exemplo de caneca personalizada 5"></div>
+                        <div class="slider-item"><img src="https://i.snapcdn.app/photo?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJodHRwczovL2luc3RhZ3JhbS5maGFuNS05LmZuYS5mYmNkbi5uZXQvdi90NTEuMjkzNTAtMTUvNDEyODIxMjAyXzgyMjgyNDM5NjI2ODc1NF81MzUyODg0MjY5MTcyMDg0MjJfbi5qcGc_c3RwPWRzdC1qcGdfZTM1X3AxMDgweDEwODBfdHQ2Jl9uY19odD1pbnN0YWdyYW0uZmhhbjUtOS5mbmEuZmJjZG4ubmV0Jl9uY19jYXQ9MTEwJl9uY19vYz1RNmNaMlFFNjJ6ZkphYnlmUER2NjdjVm51MWpWVFdCZzZ2RVBUaTdpdF9NSDQ3TGt1Z0ZzRmM2cFptMGdZZHJ6TFJrNGk2cyZfbmNfb2hjPVBFQ05ELUt0SlpRUTdrTnZ3Rk42VkFiJl9uY19naWQ9ZUN5ektDdXptcThWV2w3LVJiZjRKQSZlZG09QU9RMWMwd0JBQUFBJmNjYj03LTUmb2g9MDBfQWZRVkFnc0thNzlmeEpTR0VkNmQ5NERubmNka2lHS0NGTDRqRk1ObDJ5dWJVdyZvZT02ODdCMkQwNSZfbmNfc2lkPThiMzU0NiIsImZpbGVuYW1lIjoiVGh1bWJuYWlsXzQxMjgyMTIwMl84MjI4MjQzOTYyNjg3NTRfNTM1Mjg4NDI2OTE3MjA4NDIyX24uanBnIiwibmJmIjoxNzUyNTE1NjQ0LCJleHAiOjE3NTI1MTkyNDQsImlhdCI6MTc1MjUxNTY0NH0.86B_CXLjnf0VsaaQiHKnLFkrsf_IV6JZEFWnyp0QHq8" alt="Exemplo de caneca personalizada 6"></div>
+                        <div class="slider-item"><img src="https://i.snapcdn.app/photo?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJodHRwczovL2luc3RhZ3JhbS5maGFuNS04LmZuYS5mYmNkbi5uZXQvdi90NTEuMjkzNTAtMTUvNDM0NDU2MTA4XzM4MDQ5MDY1MDMxNjg1MDJfNTQ4OTQ1MDc1MzYxMDYwNDgwOF9uLmpwZz9zdHA9ZHN0LWpwZ19lMzVfczEwODB4MTA4MF90dDYmX25jX2h0PWluc3RhZ3JhbS5maGFuNS04LmZuYS5mYmNkbi5uZXQmX25jX2NhdD0xMDYmX25jX29jPVE2Y1oyUUU2MnpmSmFieWZQRHY2N2NWbnUxalZUV0JnNnZFUFRpN2l0X01INDdMa3VnRnNGYzZwWm0wZ1lkcnpMUms0aTZzJl9uY19vaGM9ZjVrVklPcllTalVRN2tOdndHOGZ1a2YmX25jX2dpZD1lQ3l6S0N1em1xOFZXbDctUmJmNEpBJmVkbT1BT1ExYzB3QkFBQUEmY2NiPTctNSZvaD0wMF9BZlNFUUxBZW9reHpGUzA0UDdhNTZ3WjVZX3RaWVBMSXNUZmJra1laaU5rUFZBJm9lPTY4N0IxNjIxJl9uY19zaWQ9OGIzNTQ2IiwiZmlsZW5hbWUiOiJUaHVtYm5haWxfNDM0NDU2MTA4XzM4MDQ5MDY1MDMxNjg1MDJfNTQ4OTQ1MDc1MzYxMDYwNDgwOF9uLmpwZyIsIm5iZiI6MTc1MjUxNTY0NCwiZXhwIjoxNzUyNTE5MjQ0LCJpYXQiOjE3NTI1MTU2NDR9.4BDHKl3ARCo8tX86EimM6uY7nL0Adb3qnOe_tYNt9LI" alt="Exemplo de caneca personalizada 7"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="avaliacoes">
+            <div class="container">
+                <h2>O que Nossos Clientes Dizem</h2>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="stars">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <blockquote>A qualidade da impressão é sensacional! A foto da minha família ficou perfeita. Virei cliente fiel!</blockquote>
+                        <div class="testimonial-author">
+                            <img src="https://i.postimg.cc/CxwR1XKQ/1.jpg" alt="Foto da cliente Juliana">
+                            <div>
+                                <strong>Juliana Pires</strong>
+                                <span>Itajubá, MG</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="stars">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <blockquote>Fiz canecas para minha equipe com o logo da empresa e todos amaram. O atendimento foi super rápido. Recomendo demais!</blockquote>
+                        <div class="testimonial-author">
+                            <img src="https://i.postimg.cc/jdxTJbzP/2.jpg" alt="Foto do cliente Ricardo">
+                            <div>
+                                <strong>Ricardo Almeida</strong>
+                                <span>Itajubá, MG</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="stars">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <blockquote>Presente de aniversário perfeito! A caneca chegou bem embalada e a ferramenta de criação é muito fácil de usar. Nota 10!</blockquote>
+                        <div class="testimonial-author">
+                            <img src="https://i.postimg.cc/3RjMdSNt/2.jpg" alt="Foto da cliente Carla">
+                            <div>
+                                <strong>Carla Viana</strong>
+                                <span>Santa Rita, MG</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="personalizador">
+            <div class="container">
+                <h2>Solte sua Imaginação</h2>
+                <div class="customizer-wrapper">
+                    <div class="customizer-controls">
+                        <h3>1. Adicione Imagens</h3>
+                        <div class="control-group">
+                            <label for="image-uploader">Envie sua foto, logo ou arte</label>
+                            <input type="file" id="image-uploader" accept="image/*">
+                        </div>
+
+                        <h3>2. Adicione Texto</h3>
+                        <div class="control-group">
+                            <label for="text-input">Digite sua frase</label>
+                            <input type="text" id="text-input" placeholder="Ex: Melhor Pai do Mundo">
+                             <label for="text-color" style="margin-top: 1rem;">Cor do texto</label>
+                            <input type="color" id="text-color" value="#121212">
+                            <button id="add-text-btn" class="cta-button-outline" style="width:100%; margin-top: 1rem;">Adicionar Texto</button>
+                        </div>
+                        
+                        <h3>3. Controles do Objeto</h3>
+                         <div class="control-group">
+                            <p style="font-size:0.9rem; color: var(--color-grey-dark)">Clique em um item na caneca para poder removê-lo.</p>
+                             <button id="remove-selected-btn" class="cta-button-outline" style="width:100%; background-color: var(--color-danger); color: white; border-color: var(--color-danger);">Remover Selecionado</button>
+                        </div>
+
+                        <div class="final-actions">
+                             <button id="preview-3d-btn" class="cta-button-outline" style="width:100%;">
+                                <i class="fas fa-cube"></i> Ver Preview 3D
+                             </button>
+                             <button id="download-btn" class="cta-button" style="width:100%;">
+                                <i class="fa-solid fa-download"></i> Baixar Minha Arte
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="customizer-preview">
+                        <div id="mug-preview-container">
+                             <div id="mug-background"></div>
+                             <div id="canvas-container">
+                                 <canvas id="mug-canvas"></canvas>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+<a href="https://wa.me/5535988027429" 
+   class="whatsapp-float" 
+   target="_blank" 
+   aria-label="Converse conosco no WhatsApp">
+  <img src="https://cdn-icons-png.flaticon.com/512/124/124034.png" 
+       alt="WhatsApp" 
+       width="60" 
+       height="60">
+</a>
+
+
+    <footer class="main-footer" id="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h4>Subli House</h4>
+                    <p>Sua ideia, nossa impressão. Canecas que contam histórias.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Navegue</h4>
+                    <ul>
+                        <li><a href="#inicio">Início</a></li>
+                        <li><a href="#catalogo">Canecas</a></li>
+                        <li><a href="#portfolio">Nossas Criações</a></li>
+                        <li><a href="#personalizador">Crie a Sua</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Contato</h4>
+                    <ul>
+                        <li><i class="fa-solid fa-phone"></i> (35) 98802-7429</li>
+                        <li><i class="fa-solid fa-map-marker-alt"></i> Itajubá, MG - Brasil</li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Siga-nos</h4>
+                    <div class="social-links">
+                        <a href="https://instagram.com/subli.house1" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://wa.me/5535988027429" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Subli House. Todos os direitos reservados. Criado com <i class="fa-solid fa-heart" style="color:var(--color-primary)"></i>.</p>
+                <p class="text-sm mt-2" style="font-size: 0.8rem; opacity: 0.8;">
+                    Desenvolvido por <a href="https://instagram.com/weblv.dev" target="_blank" rel="noopener noreferrer" style="font-weight: bold; color: white;">@WebLv</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal-overlay" id="previewModal">
+        <div class="modal-content">
+            <span class="modal-close" id="modalClose">&times;</span>
+            <h3>Preview da sua Arte na Caneca</h3>
+            <div id="mug-3d-preview">
+                <img id="art-preview-overlay" src="" alt="Sua arte aplicada na caneca">
+            </div>
+            <p>Este é um modelo aproximado de como sua arte ficará.</p>
+        </div>
+    </div>
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        
+        // ================================================================
+        // LÓGICA DO MENU E HEADER
+        // ================================================================
+        const header = document.getElementById('mainHeader');
+        const navLinks = document.getElementById('navLinks');
+        const menuToggle = document.getElementById('menuToggle');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+        
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+        
+        document.querySelectorAll('#navLinks a').forEach(link => {
+            link.addEventListener('click', () => {
+                if(navLinks.classList.contains('active')) {
+                   navLinks.classList.remove('active');
+                }
+            });
+        });
+
+        // ================================================================
+        // LÓGICA DO PERSONALIZADOR (USANDO FABRIC.JS)
+        // ================================================================
+        const canvasContainer = document.getElementById('canvas-container');
+        const canvas = new fabric.Canvas('mug-canvas', {
+            width: canvasContainer.clientWidth,
+            height: canvasContainer.clientHeight,
+        });
+
+        // LÓGICA FOI REMOVIDA POIS NÃO HÁ MAIS OPÇÃO DE COR
+        
+        const imageUploader = document.getElementById('image-uploader');
+        imageUploader.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(f) {
+                const data = f.target.result;
+                fabric.Image.fromURL(data, function(img) {
+                    const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
+                    img.set({
+                        scaleX: scale * 0.9,
+                        scaleY: scale * 0.9,
+                    });
+                    canvas.add(img);
+                    canvas.centerObject(img);
+                    canvas.renderAll();
+                });
+            };
+            reader.readAsDataURL(file);
+            e.target.value = '';
+        });
+
+        const textInput = document.getElementById('text-input');
+        const addTextBtn = document.getElementById('add-text-btn');
+        const textColorInput = document.getElementById('text-color');
+
+        addTextBtn.addEventListener('click', () => {
+            const text = textInput.value;
+            if (text === '') return;
+
+            const textbox = new fabric.Textbox(text, {
+                left: 10,
+                top: 10,
+                width: 150,
+                fontSize: 20,
+                fill: textColorInput.value,
+                fontFamily: 'Poppins',
+                textAlign: 'center'
+            });
+
+            canvas.add(textbox);
+            canvas.centerObjectH(textbox);
+            textInput.value = '';
+        });
+
+        textColorInput.addEventListener('input', (e) => {
+            const activeObject = canvas.getActiveObject();
+            if (activeObject && activeObject.type.includes('text')) {
+                activeObject.set('fill', e.target.value);
+                canvas.renderAll();
+            }
+        });
+        
+        const removeBtn = document.getElementById('remove-selected-btn');
+        removeBtn.addEventListener('click', () => {
+            const activeObjects = canvas.getActiveObjects();
+            if (activeObjects.length > 0) {
+                 activeObjects.forEach(object => {
+                    canvas.remove(object);
+                });
+                canvas.discardActiveObject().renderAll();
+            } else {
+                alert("Por favor, selecione um objeto na caneca para remover.");
+            }
+        });
+        
+        const downloadBtn = document.getElementById('download-btn');
+        downloadBtn.addEventListener('click', () => {
+            const dataURL = canvas.toDataURL({
+                format: 'png',
+                quality: 1,
+                multiplier: 4 // Aumenta a resolução da imagem final
+            });
+            
+            const link = document.createElement('a');
+            link.href = dataURL;
+            link.download = 'minha-arte-sublihouse.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+        // ================================================================
+        // LÓGICA DO MODAL DE PREVIEW 3D
+        // ================================================================
+        const previewModal = document.getElementById('previewModal');
+        const preview3DBtn = document.getElementById('preview-3d-btn');
+        const modalClose = document.getElementById('modalClose');
+        const artPreviewOverlay = document.getElementById('art-preview-overlay');
+
+        preview3DBtn.addEventListener('click', () => {
+            if (canvas.getObjects().length === 0) {
+                alert("Adicione uma imagem ou texto antes de ver o preview!");
+                return;
+            }
+            // Gera a imagem da arte
+            const artDataURL = canvas.toDataURL({ format: 'png', quality: 1 });
+            // Coloca a arte na imagem do modal
+            artPreviewOverlay.src = artDataURL;
+            // Mostra o modal
+            previewModal.style.display = 'flex';
+        });
+
+        // Função para fechar o modal
+        function closeModal() {
+            previewModal.style.display = 'none';
+        }
+
+        modalClose.addEventListener('click', closeModal);
+        // Fecha também se clicar fora do conteúdo
+        previewModal.addEventListener('click', (e) => {
+            if (e.target === previewModal) {
+                closeModal();
+            }
+        });
+
+    });
+    </script>
+</body>
+</html>
